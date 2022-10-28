@@ -5,6 +5,6 @@ I am developing this because PyTorch's interface to NCCL while being user friend
 ## Compiling
 
 ```
-cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_PREFIX_PATH=`python -c 'import torch;print(torch.utils.cmake_prefix_path)'` ../
+cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=`python -c 'import torch;print(torch.utils.cmake_prefix_path)'` ../
 
 ```
