@@ -1,11 +1,12 @@
 import torch
+import torch.distributed as dist
 torch.ops.load_library('build/libnccl4py.so')
 from utils import init_dist
 
 if __name__ == "__main__":
     init_dist()
 
-    torch.ops.nccl4py.setup_communicator_and_stream(3)
+    torch.ops.nccl4py.setup_communicator_and_stream(dist.get_world_size())
 
     rank = torch.ops.nccl4py.get_world_rank()
     size = torch.ops.nccl4py.get_world_size()
