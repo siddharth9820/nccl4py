@@ -85,6 +85,11 @@ void all_reduce_fp16(const torch::Tensor& x)
 	NCCLCHECK(ncclAllReduce(x.data_ptr<at::Half>(), x.data_ptr<at::Half>(), x.numel(), ncclHalf, ncclSum, nccl_comm, stream));
 }
 
+void all_reduce_fp32(const torch::Tensor& x)
+{
+	NCCLCHECK(ncclAllReduce(x.data_ptr<float>(), x.data_ptr<float>(), x.numel(), ncclFloat, ncclSum, nccl_comm, stream));
+}
+
 TORCH_LIBRARY(nccl4py, m) {
   m.def("print_tensor", print_tensor);
   m.def("get_world_rank", get_world_rank);
@@ -93,5 +98,6 @@ TORCH_LIBRARY(nccl4py, m) {
   m.def("get_stream", get_stream);
   m.def("setup_communicator_and_stream", setup_communicator_and_stream);
   m.def("all_reduce_fp16", all_reduce_fp16);
+  m.def("all_reduce_fp32", all_reduce_fp32);
 }
 

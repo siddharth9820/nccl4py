@@ -15,4 +15,11 @@ if __name__ == "__main__":
     x = torch.ones(2,3, device='cuda').half()
     torch.ops.nccl4py.all_reduce_fp16(x)
     torch.cuda.synchronize()
-    print(x)
+    print(x, x.dtype)
+
+
+    x = torch.ones(2,3, device='cuda', dtype=torch.float32)
+    torch.ops.nccl4py.all_reduce_fp32(x)
+    torch.cuda.synchronize()
+    print(x, x.dtype)
+

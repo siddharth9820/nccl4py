@@ -11,7 +11,7 @@ Requires PyTorch to be installed.
 mkdir build
 cd build
 cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=`python -c 'import torch;print(torch.utils.cmake_prefix_path)'` ../
-
+make -j 
 ```
 
 
