@@ -71,7 +71,10 @@ void setup_communicator_and_stream(int64_t G_intra)
 	nccl_id = nccl_ids[rank / G_intra];
 
 	NCCLCHECK(ncclCommInitRank(&nccl_comm, G_intra, nccl_id, rank % G_intra));
-	CUDACHECK(cudaStreamCreateWithFlags(&stream, cudaStreamNonBlocking));	
+	int priority_high, priority_low;
+	cudaDeviceGetStreamPriorityRange(&priority_low , &priority_high ) ;
+
+	CUDACHECK(cudaStreamCreateWithPriority(&stream, cudaStreamNonBlocking, priority_high ));
 }
 
 int64_t get_stream()
