@@ -6,8 +6,10 @@ find_package(CUDA 11.0 REQUIRED)
 find_package(MPI REQUIRED)
 
 include_directories(${MPI_INCLUDE_PATH})
-include_directories("/home/ssingh37/nccl/build/include")
-link_directories("/home/ssingh37/nccl/build/lib")
+# include_directories("/home/ssingh37/nccl/build/include")
+# link_directories("/home/ssingh37/nccl/build/lib")
+include_directories("/scratch/zt1/project/bhatele-lab/shared/nccl/build/include")
+link_directories("/scratch/zt1/project/bhatele-lab/shared/nccl/build/lib")
 
 add_library(nccl4py SHARED op.cpp)
 target_link_libraries(nccl4py "${TORCH_LIBRARIES}")
