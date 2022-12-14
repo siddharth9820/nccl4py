@@ -7,12 +7,15 @@
 #include "mpi.h"
 
 
-#define CUDACHECK(code)                                     \
-  do {                                                      \
-    cudaError_t status = code;                              \
-    std::string err = cudaGetErrorString(status);           \
-    CHECK_EQ(status, cudaSuccess) << "CUDA Error: " << err; \
-  } while (0)
+// retrived from: https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/examples.html
+#define CUDACHECK(cmd) do {                         \
+  cudaError_t err = cmd;                            \
+  if (err != cudaSuccess) {                         \
+    printf("Failed: Cuda error %s:%d '%s'\n",       \
+        __FILE__,__LINE__,cudaGetErrorString(err)); \
+    exit(EXIT_FAILURE);                             \
+  }                                                 \
+} while(0)
 
 
 #define NCCLCHECK(cmd) do {                         \
@@ -93,6 +96,16 @@ void all_reduce_fp32(const torch::Tensor& x)
 	NCCLCHECK(ncclAllReduce(x.data_ptr<float>(), x.data_ptr<float>(), x.numel(), ncclFloat, ncclSum, nccl_comm, stream));
 }
 
+void all_gather_fp16(const torch::Tensor& x, torch::Tensor& y)
+{
+	NCCLCHECK(ncclAllGather(x.data_ptr<at::Half>(), y.data_ptr<at::Half>(), x.numel(), ncclHalf, nccl_comm, stream));
+}
+
+void all_gather_fp32(const torch::Tensor& x, torch::Tensor& y)
+{
+	NCCLCHECK(ncclAllGather(x.data_ptr<float>(), y.data_ptr<float>(), x.numel(), ncclFloat, nccl_comm, stream));
+}
+
 TORCH_LIBRARY(nccl4py, m) {
   m.def("print_tensor", print_tensor);
   m.def("get_world_rank", get_world_rank);
@@ -102,5 +115,7 @@ TORCH_LIBRARY(nccl4py, m) {
   m.def("setup_communicator_and_stream", setup_communicator_and_stream);
   m.def("all_reduce_fp16", all_reduce_fp16);
   m.def("all_reduce_fp32", all_reduce_fp32);
+  m.def("all_gather_fp16", all_gather_fp16);
+  m.def("all_gather_fp32", all_gather_fp32);
 }
 

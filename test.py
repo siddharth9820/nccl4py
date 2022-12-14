@@ -17,9 +17,17 @@ if __name__ == "__main__":
     torch.cuda.synchronize()
     print(x, x.dtype)
 
+    y = torch.zeros(2*size, 3, device='cuda').half()
+    torch.ops.nccl4py.all_gather_fp16(x, y)
+    torch.cuda.synchronize()
+    print(y, y.dtype)
 
     x = torch.ones(2,3, device='cuda', dtype=torch.float32)
     torch.ops.nccl4py.all_reduce_fp32(x)
     torch.cuda.synchronize()
     print(x, x.dtype)
 
+    y = torch.zeros(2*size, 3, device='cuda', dtype=torch.float32)
+    torch.ops.nccl4py.all_gather_fp32(x, y)
+    torch.cuda.synchronize()
+    print(y, y.dtype)
